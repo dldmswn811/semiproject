@@ -81,6 +81,7 @@ public class MemberServlet extends HttpServlet{
 		SessionInfo info = new SessionInfo();
 		info.setMem_id(dto.getMem_id());
 		info.setMem_name(dto.getMem_name());
+		info.setMemRoll(dto.getMem_gt());
 		
 		session.setAttribute("member", info);
 		 

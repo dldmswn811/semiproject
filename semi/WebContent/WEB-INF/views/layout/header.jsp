@@ -77,6 +77,7 @@ $(function(){
 						<li><a href="<%=cp%>/qabbs/list.do">질문과답변</a></li>
 					</ul>
 				</li>
+				<c:if test="${sessionScope.member.memRoll >= 2}">
 				<li>
 					<a href="<%=cp%>/admin/powerList.do">Admin</a>
 					<ul>
@@ -85,6 +86,7 @@ $(function(){
 						<li><a href="<%=cp%>/admin/clubList.do">동아리관리</a></li>
 					</ul>
 				</li>
+				</c:if>
 			</ul>
 		</nav>
 	</div>
