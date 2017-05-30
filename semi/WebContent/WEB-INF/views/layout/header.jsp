@@ -46,35 +46,43 @@ $(function(){
 		<nav>
 			<ul>
 				<li>
-					<a href="#">HOME</a>
+					<a href="<%=cp%>/festival/list.do">Fetival</a>
 					<ul>
-						<li><a href="#">submenu1</a></li>
-						<li><a href="#">submenu1</a></li>
-						<li><a href="#">submenu1</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">ABOUT</a>
-					<ul>
-						<li><a href="#">submenu1</a></li>
-						<li><a href="#">submenu1</a></li>
-						<li><a href="#">submenu1</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">FESTIVAL</a>
-					<ul>
-						<li><a href="<%=cp%>/festival/list.do">submenu1</a></li>
-						<li><a href="#">submenu1</a></li>
-						<li><a href="<%=cp%>/reviews/listReviews.do">1</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">축제</a>
-					<ul>
-						<li><a href="<%=cp%>/festival/list.do">축제홍보</a></li>
+						<li><a href="<%=cp%>/festival/list.do">축제일정</a></li>
+						<li><a href="<%=cp%>/festivalevent/list.do">축제홍보</a></li>
+						<li><a href="<%=cp%>/reviews/list.do">축제리뷰</a></li>
+						<li><a href="<%=cp%>/tips/list.do">Tip</a></li>
 						<li><a href="<%=cp%>/festivalgallery/list.do">축제갤러리</a></li>
-						<li><a href="#">submenu1</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="<%=cp%>/clublist/list.do">Club</a>
+					<ul>
+						<li><a href="<%=cp%>/clublist/list.do">동아리현황</a></li>
+						<li><a href="<%=cp%>/Clubpublicize/list.do">동아리홍보</a></li>
+						<li><a href="<%=cp%>/clubqa/list.do">동아리Q&amp;A</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="<%=cp%>/calboard/list.do">Community</a>
+					<ul>
+						<li><a href="<%=cp%>/calboard/list.do">대학별게시판</a></li>
+						<li><a href="<%=cp%>/anonyboard/list.do">익명게시판</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="<%=cp%>/allim/list.do">Help</a>
+					<ul>
+						<li><a href="<%=cp%>/allim/list.do">공지사항</a></li>
+						<li><a href="<%=cp%>/qabbs/list.do">질문과답변</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="<%=cp%>/admin/powerList.do">Admin</a>
+					<ul>
+						<li><a href="<%=cp%>/admin/uniList.do">학교관리</a></li>
+						<li><a href="<%=cp%>/admin/powerList.do">권한관리</a></li>
+						<li><a href="<%=cp%>/admin/clubList.do">동아리관리</a></li>
 					</ul>
 				</li>
 			</ul>
