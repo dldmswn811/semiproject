@@ -3,7 +3,7 @@ package com.member;
 public class MemberDTO {
 	private String cal_code, cal_name, cal_add;
 		// [대학] 학교코드, 학교명, 학교주소
-	private String mem_id, mem_name, mem_pw, mem_gt;
+	private String mem_id, mem_name, mem_pw;
 		// [회원] 아이디, 이름, 패스워드, 권한
 	private String mem_add, mem_tel, mem_gen, mem_email;
 		// [회원] 주소, 전화번호, 성별, 이메일
@@ -11,6 +11,7 @@ public class MemberDTO {
 		// [회원] 전화번호 분리
 	private String mem_email1, mem_email2;
 		// [회원] 이메일 분리
+	private int mem_gt;	
 	
 	 
 	
@@ -80,10 +81,10 @@ public class MemberDTO {
 	public void setMem_pw(String mem_pw) {
 		this.mem_pw = mem_pw;
 	}
-	public String getMem_gt() {
+	public int getMem_gt() {
 		return mem_gt;
 	}
-	public void setMem_gt(String mem_gt) {
+	public void setMem_gt(int mem_gt) {
 		this.mem_gt = mem_gt;
 	}
 	public String getMem_add() {

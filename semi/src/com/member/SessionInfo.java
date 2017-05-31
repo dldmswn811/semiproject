@@ -2,7 +2,7 @@ package com.member;
  
 public class SessionInfo {
 	private String mem_id, mem_name;
-	private String memRoll;
+	private int memRoll;
 	
 	public String getMem_id() {
 		return mem_id;
@@ -16,10 +16,10 @@ public class SessionInfo {
 	public void setMem_name(String mem_name) {
 		this.mem_name = mem_name;
 	}
-	public String getMemRoll() {
+	public int getMemRoll() {
 		return memRoll;
 	}
-	public void setMemRoll(String memRoll) {
+	public void setMemRoll(int memRoll) {
 		this.memRoll = memRoll;
 	}
 }

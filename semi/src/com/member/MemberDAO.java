@@ -71,7 +71,7 @@ public class MemberDAO {
 				dto.setMem_id(rs.getString("mem_id"));
 				dto.setMem_name(rs.getString("mem_name"));
 				dto.setMem_pw(rs.getString("mem_pw"));
-				dto.setMem_gt(rs.getString("mem_gt"));
+				dto.setMem_gt(rs.getInt("mem_gt"));
 				dto.setCal_code(rs.getString("cal_code"));
 				dto.setMem_add(rs.getString("mem_add"));
 				dto.setMem_tel(rs.getString("mem_tel"));
