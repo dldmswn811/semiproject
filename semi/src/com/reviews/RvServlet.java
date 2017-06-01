@@ -35,13 +35,13 @@ public class RvServlet extends MyServlet {
 			return;
 		}
 
-		if (uri.indexOf("listReviews.do") != -1) {
+		if (uri.indexOf("list.do") != -1) {
 			listReviews(req, resp);
 		} else if(uri.indexOf("created.do")!=-1) {
 			rvCreatedForm(req,resp);
-		}   else if(uri.indexOf("created_ok.do")!=-1) {
+		} else if(uri.indexOf("created_ok.do")!=-1) {
 			rvCreatedSubmit(req, resp);
-		}  else if(uri.indexOf("article.do")!=-1) {
+		} else if(uri.indexOf("article.do")!=-1) {
 			rvArticle(req, resp);
 		} else if(uri.indexOf("update.do")!=-1) {
 			rvUpdateForm(req, resp);
@@ -53,34 +53,7 @@ public class RvServlet extends MyServlet {
 			rvReplySubmit(req, resp);
 		} else if(uri.indexOf("delete.do")!=-1) {
 			rvDelete(req, resp);
-		} else if(uri.indexOf("countLikeBoard.do")!=-1) {
-			// 게시물 공감 개수
-			countLikeBoard(req, resp);
-		} else if(uri.indexOf("insertLikeBoard.do")!=-1) {
-			// 게시물 공감 저장
-			insertLikeBoard(req, resp);
-		} else if(uri.indexOf("insertReply.do")!=-1) {
-			// 댓글 추가
-			insertReply(req, resp);
-		} else if(uri.indexOf("listReply.do")!=-1) {
-			// 댓글 리스트
-			listReply(req, resp);
-		} else if(uri.indexOf("deleteReply.do")!=-1) {
-			// 댓글 삭제
-			deleteReply(req, resp);
-		} else if(uri.indexOf("insertReplyAnswer.do")!=-1) {
-			// 댓글의 답글 추가
-			insertReplyAnswer(req, resp);
-		} else if(uri.indexOf("listReplyAnswer.do")!=-1) {
-			// 댓글의 답글 리스트
-			listReplyAnswer(req, resp);
-		} else if(uri.indexOf("deleteReplyAnswer.do")!=-1) {
-			// 댓글의 답글 삭제
-			deleteReplyAnswer(req, resp);
-		} else if(uri.indexOf("countReplyAnswer.do")!=-1) {
-			// 댓글의 답글 개수
-			countReplyAnswer(req, resp);
-		}
+		} 
 
 	}
 	
@@ -140,12 +113,12 @@ public class RvServlet extends MyServlet {
 			listReviews = dao.listReviews(start, end, searchKey, searchValue);
 		
 		// 리스트 글번호 만들기
-		int rv_listnum, n=0;
+		int listNum, n=0;
 		Iterator<ReviewsDTO>it = listReviews.iterator();
 		while(it.hasNext()) {
 			ReviewsDTO dto = it.next();
-			rv_listnum=reviewsCount-(start+n-1);
-			dto.setRv_listnum(rv_listnum);
+			listNum=reviewsCount-(start+n-1);
+			dto.setListNum(listNum);
 			n++;
 		}
 		
@@ -159,7 +132,7 @@ public class RvServlet extends MyServlet {
 		
 		
 		// 페이징처리
-		String listUrl = cp+"/reviews/listReviews.do";
+		String listUrl = cp+"/reviews/list.do";
 		String articleUrl = cp+"/reviews/article.do?page="+current_page;
 		if(query.length()!=0) {
 			listUrl += "?"+query;
@@ -184,95 +157,228 @@ public class RvServlet extends MyServlet {
 		
 	}
 	
+	
+	// 글쓰기폼
 	protected void rvCreatedForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setAttribute("mode", "created");
 		String path="/WEB-INF/views/reviews/created.jsp";
 		forward(req, resp, path);
 	}
+
 	
+	// 글저장
 	protected void rvCreatedSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 게시물저장
-		HttpSession session=req.getSession();
-		SessionInfo info=(SessionInfo)session.getAttribute("member");
-		
 		String cp=req.getContextPath();
+		
+		HttpSession session=req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
 		
 		ReviewsDAO dao = new ReviewsDAO();
 		ReviewsDTO dto = new ReviewsDTO();
 		
-		// userId는 세션에 저장된 정보
-		//dto.setMem_id(info.getUserId());
+		// mem_id는 세션에 저장된 정보
+		dto.setMem_id(info.getMem_id());
 		
 		// 파라미터
 		dto.setRv_title(req.getParameter("rv_title"));
 		dto.setRv_content(req.getParameter("rv_content"));
 		
-		dao.insertReviews(dto);
+		dao.insertReviews(dto, "created");
 		
-		resp.sendRedirect(cp + "/reviews/listReviews.do");
+		resp.sendRedirect(cp + "/reviews/list.do");
 		
 	}
 	
+	
+	// 게시물 보기
 	protected void rvArticle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String cp = req.getContextPath();
+		ReviewsDAO dao = new ReviewsDAO();
+		
+		int rv_num=Integer.parseInt(req.getParameter("rv_num"));
+		String page= req.getParameter("page");
+		String searchKey = req.getParameter("searchKey");
+		String searchValue = req.getParameter("searchValue");
+		if(searchKey ==null) {
+			searchKey ="rv_title";
+			searchValue="";
+		}
+		
+		searchValue = URLDecoder.decode(searchValue, "UTF-8");
+		
+		//조회수 증가
+		dao.updateReviewCnt(rv_num);
+		
+		//게시물 가져오기
+		ReviewsDTO dto=dao.readReviews(rv_num);
+		if(dto==null) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		dto.setRv_content(dto.getRv_content().replaceAll("\n", "<br>"));
+		
+		// 이전글, 다음글
+		ReviewsDTO preReadDto=dao.preReadDto(dto.getGroupNum(), dto.getOrderNo(), searchKey, searchValue);
+		ReviewsDTO nextReadDto=dao.nextReadDto(dto.getGroupNum(), dto.getOrderNo(), searchKey, searchValue);
+		
+		// 리스트나 이전글, 다음글에서 사용할 파라미터
+		String query="page="+page;
+		if(searchValue.length()!=0) {
+			query+="&searchKey="+searchKey +"&searchValue="+URLEncoder.encode(searchValue,"utf-8");
+		}
+		
+		//jsp로 전달할 속성
+		req.setAttribute("dto", dto);
+		req.setAttribute("page", page);
+		req.setAttribute("query", query);
+		req.setAttribute("preReadDto", preReadDto);
+		req.setAttribute("nextReadDto", nextReadDto);
+		
+		//포워딩
+		String path="/WEB-INF/views/reviews/article.jsp";
+		forward(req, resp, path);
 		
 	}
 	
 	protected void rvUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info=(SessionInfo)session.getAttribute("member");
+		
+		String cp=req.getContextPath();
+		ReviewsDAO dao = new ReviewsDAO();
+		
+		String page = req.getParameter("page");
+		int rv_num=Integer.parseInt(req.getParameter("rv_num"));
+		ReviewsDTO dto=dao.readReviews(rv_num);
+		
+		if(dto==null) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		if(! dto.getMem_id().equals(info.getMem_id())) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		
+		req.setAttribute("dto", dto);
+		req.setAttribute("page", page);
+		req.setAttribute("mode", "update");
+		
+		String path="/WEB-INF/views/reviews/created.jsp";
+		forward(req, resp, path);
 		
 	}
 
+	//수정완료
 	protected void rvUpdateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
+		HttpSession session=req.getSession();
+		SessionInfo info=(SessionInfo)session.getAttribute("member");
+		
+		String cp=req.getContextPath();
+		ReviewsDAO dao= new ReviewsDAO();
+		
+		String page=req.getParameter("page");
+		
+		if(req.getMethod().equalsIgnoreCase("GET")) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		ReviewsDTO dto=new ReviewsDTO();
+		dto.setRv_num(Integer.parseInt(req.getParameter("rv_num")));
+		dto.setRv_title(req.getParameter("rv_title"));
+		dto.setRv_content(req.getParameter("rv_content"));
+		
+		dao.updateReview(dto, info.getMem_id());
+		
+		resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+		
 	}
 
+	
+	//답변 폼
 	protected void rvReplyForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
+		String cp=req.getContextPath();
+		ReviewsDAO dao = new ReviewsDAO();
+		
+		int rv_num=Integer.parseInt(req.getParameter("rv_num"));
+		String page=req.getParameter("page");
+		ReviewsDTO dto=dao.readReviews(rv_num);
+		if(dto==null) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		dto.setRv_content("["+dto.getRv_title()+"] 에 대한 답변입니다. \n");
+		
+		req.setAttribute("dto", dto);
+		req.setAttribute("page", page);
+		req.setAttribute("mode", "reply");
+		
+		String path="/WEB-INF/views/reviews/created.jsp";
+		forward(req, resp, path);
+		
 	}
 
+	
+	//답변완료
 	protected void rvReplySubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp= req.getContextPath();
+		ReviewsDAO dao = new ReviewsDAO();
+		
+		String page = req.getParameter("page");
+		
+		ReviewsDTO dto = new ReviewsDTO();
+		dto.setMem_id(info.getMem_id());
+		
+		dto.setRv_title(req.getParameter("rv_title"));
+		dto.setRv_content(req.getParameter("rv_content"));
+		dto.setGroupNum(Integer.parseInt(req.getParameter("groupNum")));
+		dto.setDepth(Integer.parseInt(req.getParameter("depth")));
+		dto.setOrderNo(Integer.parseInt(req.getParameter("orderNo")));
+		dto.setParent(Integer.parseInt(req.getParameter("parent")));
+		
+		dao.insertReviews(dto, "reply");
+		
+		resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+		
 	}
 
+	
+	// 삭제
 	protected void rvDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String cp= req.getContextPath();
+		ReviewsDAO dao= new ReviewsDAO();
+		
+		String page = req.getParameter("page");
+		int rv_num = Integer.parseInt(req.getParameter("rv_num"));
+		ReviewsDTO dto=dao.readReviews(rv_num);
+		
+		if(dto==null) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		// 게시물을 올린 사용자나 admin이 아니면 삭제가 불가능...
+		if (! dto.getMem_id().equals(info.getMem_id()) && ! info.getMem_id().equals("admin")) {
+			resp.sendRedirect(cp+"/reviews/list.do?page="+page);
+			return;
+		}
+		
+		dao.deleteReview(rv_num);
+		resp.sendRedirect(cp+"/reviews/list.do?page="+page);
 		
 	}
-	
-	protected void countLikeBoard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	
-	}
-	
-	protected void insertLikeBoard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void deleteReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void insertReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void listReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void deleteReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
-	protected void countReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-	}
-	
 
-
+	
 }

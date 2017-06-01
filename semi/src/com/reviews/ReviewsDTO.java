@@ -1,11 +1,12 @@
 package com.reviews;
 
 public class ReviewsDTO {
-	private int rv_num, rv_listnum;
+	private int rv_num, listNum;
 	private String mem_id, mem_name;
 	private String rv_title, rv_content;
 	private int rv_cnt;
 	private String rv_date;
+	private int groupNum, orderNo, depth, parent;
 	
 	
 	
@@ -15,11 +16,12 @@ public class ReviewsDTO {
 	public void setRv_num(int rv_num) {
 		this.rv_num = rv_num;
 	}
-	public int getRv_listnum() {
-		return rv_listnum;
+	
+	public int getListNum() {
+		return listNum;
 	}
-	public void setRv_listnum(int rv_listnum) {
-		this.rv_listnum = rv_listnum;
+	public void setListNum(int listNum) {
+		this.listNum = listNum;
 	}
 	public String getMem_id() {
 		return mem_id;
@@ -57,8 +59,30 @@ public class ReviewsDTO {
 	public void setRv_date(String rv_date) {
 		this.rv_date = rv_date;
 	}
-
-	
+	public int getGroupNum() {
+		return groupNum;
+	}
+	public void setGroupNum(int groupNum) {
+		this.groupNum = groupNum;
+	}
+	public int getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(int orderNo) {
+		this.orderNo = orderNo;
+	}
+	public int getDepth() {
+		return depth;
+	}
+	public void setDepth(int depth) {
+		this.depth = depth;
+	}
+	public int getParent() {
+		return parent;
+	}
+	public void setParent(int parent) {
+		this.parent = parent;
+	}
 	
 	
 }
