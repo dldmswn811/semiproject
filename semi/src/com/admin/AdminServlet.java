@@ -40,28 +40,42 @@ public class AdminServlet extends MyServlet {
 			return;
 		}
 		
+		// 切背 包府
 		if(uri.indexOf("uniList.do") != -1){
-			list(req, resp);
+			calList(req, resp);
 		}
 		else if(uri.indexOf("unicreated.do") != -1){
-			createdForm(req, resp);
+			calCreatedForm(req, resp);
 		}
 		else if(uri.indexOf("unicreated_ok.do") != -1){
-			createdSubmit(req, resp);
+			calCreatedSubmit(req, resp);
 		}		
 		else if(uri.indexOf("uniupdate.do") != -1){
-			updateForm(req, resp);
+			calUpdateForm(req, resp);
 		}
 		else if(uri.indexOf("uniupdate_ok.do") != -1){
-			updateSubmit(req, resp);
+			calUpdateSubmit(req, resp);
 		}		
-		else if(uri.indexOf("delete.do") != -1){
-			delete(req, resp);
-		}		
+		else if(uri.indexOf("unidelete.do") != -1){
+			calDelete(req, resp);
+		}
 		
+		// 鼻茄包府
+		if(uri.indexOf("powerList.do") != -1){
+			powerList(req, resp);
+		}	
+		else if(uri.indexOf("powerupdate.do") != -1){
+			powerUpdateForm(req, resp);
+		}
+		else if(uri.indexOf("powerupdate_ok.do") != -1){
+			powerUpdateSubmit(req, resp);
+		}		
+		else if(uri.indexOf("powerdelete.do") != -1){
+			powerDelete(req, resp);
+		}
 	}
 	
-	protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void calList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		AdminDAO dao = new AdminDAO();
 		MyUtil myUtil = new MyUtil();
@@ -114,12 +128,12 @@ public class AdminServlet extends MyServlet {
 		
 		forward(req, resp, "/WEB-INF/views/admin/unilist.jsp");
 	}
-	protected void createdForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void calCreatedForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		req.setAttribute("mode", "created");
 		forward(req, resp, "/WEB-INF/views/admin/unicreated.jsp");
 	}
-	protected void createdSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void calCreatedSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		String cp = req.getContextPath();
 		
@@ -134,7 +148,7 @@ public class AdminServlet extends MyServlet {
 		
 		resp.sendRedirect(cp + "/admin/uniList.do");		
 	}
-	protected void updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void calUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		String cp = req.getContextPath();
 		
@@ -155,7 +169,7 @@ public class AdminServlet extends MyServlet {
 		
 		forward(req, resp, "/WEB-INF/views/admin/unicreated.jsp");
 	}
-	protected void updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void calUpdateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		AdminDAO dao = new AdminDAO();
 		AdminDTO dto = new AdminDTO();
 		
@@ -172,7 +186,7 @@ public class AdminServlet extends MyServlet {
 		resp.sendRedirect(cp + "/admin/uniList.do?page=" + page);
 		
 	}
-	protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void calDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		AdminDAO dao = new AdminDAO();
 		
 		String cp = req.getContextPath();
@@ -184,4 +198,30 @@ public class AdminServlet extends MyServlet {
 		
 		resp.sendRedirect(cp + "/admin/uniList.do?page=" + page);
 	}
+	
+	protected void powerList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {		
+		
+		forward(req, resp, "/WEB-INF/views/admin/powerlist.jsp");
+	}
+
+	protected void powerUpdateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		
+		forward(req, resp, "/WEB-INF/views/admin/powercreated.jsp");
+	}
+	protected void powerUpdateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		String cp = req.getContextPath();
+		String page = req.getParameter("page");
+		
+		resp.sendRedirect(cp + "/admin/powerList.do?page=" + page);
+		
+	}
+	protected void powerDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String cp = req.getContextPath();
+		
+		String page = req.getParameter("page");
+		resp.sendRedirect(cp + "/admin/powerList.do?page=" + page);
+	}
+	
 }
