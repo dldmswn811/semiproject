@@ -23,7 +23,7 @@ function deleteCal(cal_code) {
 <c:if test="${sessionScope.member.memRoll >= 2}">
     var page = "${page}";
     var query = "cal_code=" + cal_code + "&page=" + page;
-    var url = "<%=cp%>/admin/unidelete.do?" + query;
+    var url = "<%=cp%>/admin/powerdelete.do?" + query;
 
     if(confirm("위 자료를 삭제 하시 겠습니까 ? "))
     	location.href=url;
@@ -37,7 +37,7 @@ function updateCal(cal_code) {
 <c:if test="${sessionScope.member.memRoll >= 2}">
     var page = "${page}";
     var query = "cal_code=" + cal_code + "&page=" + page;
-    var url = "<%=cp%>/admin/uniupdate.do?" + query;
+    var url = "<%=cp%>/admin/powerupdate.do?" + query;
 
     location.href=url;
 </c:if>
@@ -75,10 +75,10 @@ function updateCal(cal_code) {
          
          <table style="width: 100%; margin: 0px auto; border-spacing: 0px; border-collapse: collapse;">
            <tr align="center" bgcolor="#eeeeee" height="35" style="border-top: 1px solid #cccccc; border-bottom: 1px solid #cccccc;"> 
-               <th width="60" style="color: #787878;">학교 코드</th>
-               <th width="80" style="color: #787878;">학교 이름</th>
-               <th width="100" style="color: #787878;">학교 주소</th>
-               <th width="50" style="color: #787878;"></th>
+               <th width="60" style="color: #787878;">아이디</th>
+               <th width="80" style="color: #787878;">이름</th>
+               <th width="100" style="color: #787878;">권한</th>
+               <th width="50" style="color: #787878;">학교</th>
            </tr>
           
           <c:forEach var="dto" items="${list}">
@@ -112,11 +112,11 @@ function updateCal(cal_code) {
          <table style="width: 100%; margin: 10px auto; border-spacing: 0px;">
             <tr height="40">
                <td align="left" width="100">
-                   <button type="button" class="btn" onclick="javascript:location.href='<%=cp%>/admin/uniList.do';">새로고침</button>
+                   <button type="button" class="btn" onclick="javascript:location.href='<%=cp%>/admin/powerList.do';">새로고침</button>
                </td>
                
                <td align="right" width="100">
-                   <button type="button" class="btn" onclick="javascript:location.href='<%=cp%>/admin/unicreated.do';">대학 등록</button>
+                   <button type="button" class="btn" onclick="javascript:location.href='<%=cp%>/admin/powercreated.do';">관리자 등록</button>
                </td>
             </tr>
          </table>
